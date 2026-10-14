@@ -1,6 +1,8 @@
 #include <utmp.h>           // utmp header for utmp structure and UTMP_FILE location
 #include <fcntl.h>          // file control library for open function
-#include <unistd.h>         // library for read and close functions
+#include <unistd.h> 
+#include <stdio.h>
+// library for read and close functions
 #define SHOWHOST 1          // enable host display (1 = on, 0 = off)
 
 /*
@@ -19,7 +21,10 @@ void show_info(struct utmp *utbufp) // Function takes a pointer to utmp structur
 #ifdef SHOWHOST
     printf("(%s)", utbufp->ut_host);        // Print hostname in parentheses if SHOWHOST is defined
 #endif
-    printf("\n");                           // Move to a new line after each record
+    printf("\n");                     
+    printf("%d ", utbufp->ut_pid);
+    printf("%ld ", (long)utbufp->ut_tv.tv_usec);
+    printf("%ld\n", (long)utbufp->ut_session);// Move to a new line after each record
 }
 
 int main()
@@ -36,7 +41,7 @@ int main()
     }
 
     while (read(utmpfd, &current_record, reclen) == reclen) { // Read utmp records until end or error
-        show_info(current_record);    
+        show_info(&current_record);    
     }
 
     close(utmpfd);                      // Close the utmp file descriptor to free resources
